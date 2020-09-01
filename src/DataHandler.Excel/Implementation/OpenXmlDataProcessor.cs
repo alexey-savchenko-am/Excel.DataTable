@@ -7,11 +7,10 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace Tools.Excel.Implementation
+namespace DataHandler.Excel.Implementation
 {
     public abstract class OpenXmlDataProcessor
     {
-        
         
         protected uint InsertBorder(WorkbookPart workbookPart, Border border)
         {
