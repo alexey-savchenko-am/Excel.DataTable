@@ -71,6 +71,7 @@ The secon one is a Excel sheet name, where the table specified:
 ## Result 
 
 Use property Result to get data as a list of objects with type SalesOrdersDataModel.
+
 Full code of extractig data from excel file should look like this one:
 
 ```
