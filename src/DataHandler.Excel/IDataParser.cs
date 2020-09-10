@@ -18,19 +18,15 @@ namespace DataHandler.Excel
         IDataParser<TModel> Bind(Stream stream);
 
         IDataParser<TModel> BindCopy(string filePath, string copyPath, bool openToWrite = false);
-
-        IDataParser<TModel>  ExtractData(bool disposeAfterReading = true, string sheetName = "");
         
-        IDataParser<TModel>  ExtractData(Func<TModel, bool> filter, bool disposeAfterReading = true, string sheetName = "");
-
+        IDataParser<TModel> ExtractData(string sheetName = "");
         
-        IDataParser<TModel> ExtractDataParallel(string sheetName = "");
-        IDataParser<TModel> ExtractDataParallel(Func<TModel, bool> filter, string sheetName = "");
+        IDataParser<TModel> ExtractData(Func<TModel, bool> filter, string sheetName = "");
 
         IDataParser<TModel> WriteData(IEnumerable<TModel> data, RowStyles rowStyle = RowStyles.Simple,
-            bool closeDocumentsAfterWriting = true, string sheetName = "");
+            bool keepDocumentsOpen = false, string sheetName = "");
 
-        IDataParser<TModel> UpdateCells(IEnumerable<CellTemplate> cellTemplates, bool closeDocumentsAfterWriting = true);
+        IDataParser<TModel> UpdateCells(IEnumerable<CellTemplate> cellTemplates, bool keepDocumentsOpen = true);
         
         List<TResultModel> Each<TResultModel>(Func<TModel, TResultModel> callback);
 

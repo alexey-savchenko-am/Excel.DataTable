@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using DataHandler.Excel.Models;
 using DocumentFormat.OpenXml.Packaging;
@@ -37,14 +38,7 @@ namespace DataHandler.Excel.Implementation
         
         public IDataWriter Writer => _dataWriter;
 
-        /// <summary>
-        /// Связывание IDataParser<TModel> с физическим .xlsx файлом на диске
-        /// Возможно связать IDataParser<TModel> с несколькими файлами, имеющими одинаковый формат столбцов
-        /// Для этого необходимо вызвать метод Bind несколько раз для одного экземпляра данного класса
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
-        /// <exception cref="FileNotFoundException"></exception>
+
         public IDataParser<TModel> Bind(string filePath, bool openToWrite = false)
         {
             var fileInfo = new FileInfo(filePath);
@@ -71,7 +65,6 @@ namespace DataHandler.Excel.Implementation
             
             var fileInfo = new FileInfo(copyPath);
             
-            
             this._fileStreamList.Add(
                 openToWrite 
                     ? fileInfo.Open(FileMode.Open, FileAccess.ReadWrite) 
@@ -80,7 +73,6 @@ namespace DataHandler.Excel.Implementation
             return this;
         }
 
-        
         
         public IDataParser<TModel> Bind(Stream stream)
         {
@@ -92,64 +84,9 @@ namespace DataHandler.Excel.Implementation
         }
 
         
-        public IDataParser<TModel> ExtractData(bool disposeAfterReading = true, string sheetName = "") => ExtractData(null, disposeAfterReading, sheetName);
+        public IDataParser<TModel> ExtractData(string sheetName = "") => ExtractData(null, sheetName);
         
-        
-        /// <summary>
-        /// Получить данные из .xlsx файла с возможностью фильтрации на выходе
-        /// </summary>
-        /// <param name="filter">Коллбэк метод, используемый для фильтрации данных на выходе</param>
-        /// <returns></returns>
-        /// <exception cref="NullReferenceException"></exception>
-        public IDataParser<TModel> ExtractData(Func<TModel, bool> filter, bool disposeAfterReading = true, string sheetName = "")
-        {
-            if(!this._fileStreamList.Any())
-                throw new DataParserException("Use Bind method before extracting data from file or stream");
-                
-            var filterValues = ExtractFilterValues(typeof(TModel));
-            
-            var resultDataTable = new DataTable();
-            
-            
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            
-            foreach (var stream in this._fileStreamList)
-            {
-                var dataTableTask = _dataObtainer
-                    .ObtainTable(
-                        stream, 
-                        filterValues, 
-                        isEditable:false, 
-                        //disposeStreamAfterReading: true,
-                        sheetName: sheetName);
-                
-               dataTableTask.Combine(ref resultDataTable);
-                
-            }
-            sw.Stop();
-            var time = sw.ElapsedMilliseconds;
-            Console.WriteLine("ExtractData " + time + " ms passed");
-            sw.Reset();
-            
-            /*if(disposeAfterReading)
-                _fileStreamList.ForEach(ClearStream);*/
-            
-            var resultModelList = resultDataTable.DataRows
-                .AsParallel()
-                .Select(ProjectDataRowToModel);
-                
-            if(filter != null)
-                resultModelList = resultModelList.Where(filter);
-            
-            this._result =  resultModelList.ToList();
-
-            return this;
-        }
-        
-        public IDataParser<TModel> ExtractDataParallel(string sheetName = "") => ExtractDataParallel(null, sheetName);
-        
-        public IDataParser<TModel> ExtractDataParallel(Func<TModel, bool> filter, string sheetName = "")
+        public IDataParser<TModel> ExtractData(Func<TModel, bool> filter, string sheetName = "")
         {
             if(!this._fileStreamList.Any())
                 throw new DataParserException("Use Bind method before extracting data from file or stream");
@@ -157,6 +94,7 @@ namespace DataHandler.Excel.Implementation
             var filterValues = ExtractFilterValues(typeof(TModel));
             
             var resultDataTables = new BlockingCollection<DataTable>();
+            var spin = new SpinWait();
             
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -173,8 +111,8 @@ namespace DataHandler.Excel.Implementation
                 resultDataTables.TryAdd(dataTable);
             });
             
-            while (!resultDataTables.Any()) { }
-            
+            while (resultDataTables.Count < _fileStreamList.Count) spin.SpinOnce();
+                
             //---------Clear Streams------------
             this.ClearStreamList();
             //----------------------------------
@@ -182,8 +120,7 @@ namespace DataHandler.Excel.Implementation
             
             sw.Stop();
             var time = sw.ElapsedMilliseconds;
-            Console.WriteLine("ExtractDataParallel " + time + " ms passed");
-
+            Console.WriteLine("ExtractDataParallel " + time + " ms elapsed");
             
             var dataRows = resultDataTables.SelectMany(dt => dt.DataRows);
             
@@ -200,11 +137,14 @@ namespace DataHandler.Excel.Implementation
         }
         
 
-        public IDataParser<TModel> WriteData(IEnumerable<TModel> data, RowStyles rowStyle = RowStyles.Simple, bool closeDocumentsAfterWriting = true, string sheetName = "")
+        public IDataParser<TModel> WriteData(IEnumerable<TModel> data, RowStyles rowStyle = RowStyles.Simple, bool keepDocumentsOpen = false, string sheetName = "")
         {
             if(!this._fileStreamList.Any())
                 throw new DataParserException("Use Bind method before writing data to file or stream");
-
+            
+            if(!this._fileStreamList.All(s => s.CanWrite))
+                throw new DataParserException("Can not write data to excel table. Use Bind method with flag openToWrite = true");
+            
             var filterSets = GetFilterSetList(data);
 
             foreach (var stream in this._fileStreamList)
@@ -218,14 +158,16 @@ namespace DataHandler.Excel.Implementation
                         sheetName);
             }
             
-/*            if(closeDocumentsAfterWriting)
-                _fileStreamList.ForEach(ClearStream);*/
+            //---------Clear Streams------------
+            if(!keepDocumentsOpen)
+                this.ClearStreamList();
+            //----------------------------------
             
             return this;
         }
 
 
-        public IDataParser<TModel> UpdateCells(IEnumerable<CellTemplate> cellTemplates, bool closeDocumentsAfterWriting = true)
+        public IDataParser<TModel> UpdateCells(IEnumerable<CellTemplate> cellTemplates, bool keepDocumentsOpen = false)
         {
             if(!this._fileStreamList.Any())
                 throw new DataParserException("Use Bind method before extracting data from file or stream");
@@ -239,8 +181,10 @@ namespace DataHandler.Excel.Implementation
                 }
             }
             
-            /*if(closeDocumentsAfterWriting)
-                _fileStreamList.ForEach(ClearStream);*/
+            //---------Clear Streams------------
+            if(!keepDocumentsOpen)
+                this.ClearStreamList();
+            //----------------------------------
             
             return this;
 
@@ -294,22 +238,6 @@ namespace DataHandler.Excel.Implementation
             return result.ToList();
         }
         
-/*        public List<TResultModel> EachAsync<TResultModel>(Func<Task<TModel>, TResultModel> callback)
-        {
-            if(!this._result.Any())
-                throw new DataParserException($"Result is not evaluated. Use ExtractData before calling Each method");
-
-
-            foreach (var r in this._result)
-            {
-                callback(r)
-            }
-            
-            var result = this._result.Select(callback);
-
-            return result.ToList();
-        }*/
-
         public async Task<List<TResultModel>> EachAsync<TResultModel>(Func<TModel, TResultModel> callback)
         {
             if(!this._result.Any())

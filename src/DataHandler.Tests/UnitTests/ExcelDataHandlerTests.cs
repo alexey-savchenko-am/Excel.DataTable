@@ -19,7 +19,7 @@ namespace DataHandler.Tests.UnitTests
                         new OpenXmlDataObtainer(), 
                         new OpenXmlDataWriter())
                     .Bind("./SampleData.xlsx")
-                    .ExtractData(true, "SalesOrders")
+                    .ExtractData("SalesOrders")
                     .Result;
             
             Assert.True(data.Any());
@@ -53,7 +53,7 @@ namespace DataHandler.Tests.UnitTests
 
             var data = parser
                 .Bind("./SampleData.xlsx")
-                .ExtractData(true, "SalesOrders")
+                .ExtractData("SalesOrders")
                 .Result;
 
             var orderEqualityComparer = new OrderEqualityComparer();
