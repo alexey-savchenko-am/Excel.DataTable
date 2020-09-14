@@ -21,7 +21,7 @@ namespace DataHandler.Tests.UnitTests
                         .Bind("./SampleData.xlsx")
                         .ExtractData("SalesOrders")
                         .Result;
-            }
+            } 
        
             Assert.True(result.Any());
         }
