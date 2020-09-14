@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
-using DataHandler.Excel;
-using DataHandler.Excel.Implementation;
 using DataHandler.Excel.Models;
 using Xunit;
 
@@ -14,15 +12,18 @@ namespace DataHandler.Tests.UnitTests
         [Fact]
         public void ExtractingDataFromExcelFileSuccess()
         {
-            var data =
-                new ExcelDataParser<SalesOrdersDataModel>(
-                        new OpenXmlDataObtainer(), 
-                        new OpenXmlDataWriter())
-                    .Bind("./SampleData.xlsx")
-                    .ExtractData("SalesOrders")
-                    .Result;
-            
-            Assert.True(data.Any());
+            var result = new List<SalesOrdersDataModel>();
+
+            using (var parser = new TestSalesOrdersDataParser())
+            {
+                   result = 
+                       parser
+                        .Bind("./SampleData.xlsx")
+                        .ExtractData("SalesOrders")
+                        .Result;
+            }
+       
+            Assert.True(result.Any());
         }
         
         [Fact]
@@ -35,30 +36,22 @@ namespace DataHandler.Tests.UnitTests
                     .CreateMany<SalesOrdersDataModel>()
                     .ToList();
 
-            IDataParser<SalesOrdersDataModel> parser = null;
-            try
-            {
-                parser =
-                    new ExcelDataParser<SalesOrdersDataModel>(
-                            new OpenXmlDataObtainer(), 
-                            new OpenXmlDataWriter())
-                        .Bind("./SampleData.xlsx", true)
-                        .WriteData(testRecords, RowStyles.Simple, true, "SalesOrders");
-            }
-            finally
-            {
-                parser.Clear();
-            }
-   
+            var data = new List<SalesOrdersDataModel>();
 
-            var data = parser
-                .Bind("./SampleData.xlsx")
-                .ExtractData("SalesOrders")
-                .Result;
+            using (var parser = new TestSalesOrdersDataParser())
+            {
+                parser
+                    .Bind("./SampleData.xlsx", true)
+                    .WriteData(testRecords, RowStyles.Simple, false, "SalesOrders");
+
+                data = parser
+                  .Bind("./SampleData.xlsx")
+                  .ExtractData("SalesOrders")
+                  .Result;
+            }
 
             var orderEqualityComparer = new OrderEqualityComparer();
             var result = testRecords.All(x => data.Contains(x, orderEqualityComparer));
-
 
             Assert.True(result);
         }
