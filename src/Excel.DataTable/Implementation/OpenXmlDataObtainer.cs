@@ -2,20 +2,20 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DataHandler.Excel.Models;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Excel.DataTable.Models;
 
-namespace DataHandler.Excel.Implementation
+namespace Excel.DataTable.Implementation
 {
     public class OpenXmlDataObtainer
         : OpenXmlDataProcessor, IDataObtainer
     {
         
-        public DataTable ObtainTable(string filePath,  IEnumerable<FilterValue> filterValues, bool isEditable, string sheetName = "")
+        public Models.DataTable ObtainTable(string filePath,  IEnumerable<FilterValue> filterValues, bool isEditable, string sheetName = "")
         {
 
-            var dataTable = new DataTable();
+            var dataTable = new Models.DataTable();
             
             using (var document = SpreadsheetDocument.Open(filePath, isEditable))
             {
@@ -25,10 +25,10 @@ namespace DataHandler.Excel.Implementation
             return dataTable;
         }
         
-        public DataTable ObtainTable(Stream stream,  IEnumerable<FilterValue> filterValues, bool isEditable, bool disposeStreamAfterReading = true, string sheetName = "")
+        public Models.DataTable ObtainTable(Stream stream,  IEnumerable<FilterValue> filterValues, bool isEditable, bool disposeStreamAfterReading = true, string sheetName = "")
         {
 
-            var dataTable = new DataTable();
+            var dataTable = new Models.DataTable();
             
             using (var document = SpreadsheetDocument.Open(stream, isEditable))
             {
@@ -38,10 +38,10 @@ namespace DataHandler.Excel.Implementation
             return dataTable;
         }
         
-        public async Task<DataTable> ObtainTableAsync(Stream stream,  IEnumerable<FilterValue> filterValues, bool isEditable, string sheetName = "")
+        public async Task<Models.DataTable> ObtainTableAsync(Stream stream,  IEnumerable<FilterValue> filterValues, bool isEditable, string sheetName = "")
         {
 
-            var dataTable = new DataTable();
+            var dataTable = new Models.DataTable();
             
             using (var document = SpreadsheetDocument.Open(stream, isEditable))
             {

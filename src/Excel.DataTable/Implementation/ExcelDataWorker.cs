@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataHandler.Excel.Implementation
+namespace Excel.DataTable.Implementation
 {
     public interface IExcelDataWorker
     {

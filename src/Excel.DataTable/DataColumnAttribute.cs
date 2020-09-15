@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataHandler.Excel
+namespace Excel.DataTable
 {
     public class DataColumnAttribute 
         : Attribute

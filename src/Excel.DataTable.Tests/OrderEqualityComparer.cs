@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DataHandler.Tests
+namespace Excel.DataTable.Tests
 {
     internal class OrderEqualityComparer
         : IEqualityComparer<SalesOrdersDataModel>

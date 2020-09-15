@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace DataHandler.Excel.Models
+namespace Excel.DataTable.Models
 {
     public class FilterValue
     {

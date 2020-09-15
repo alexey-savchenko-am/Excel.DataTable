@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using DataHandler.Excel.Models;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Excel.DataTable.Models;
 
-namespace DataHandler.Excel.Implementation
+namespace Excel.DataTable.Implementation
 {
     public class OpenXmlDataWriter
         : OpenXmlDataProcessor, IDataWriter
     {
         
-        public DataTable WriteToTable(Stream stream, IEnumerable<FilterSet> filterSets, bool isEditable, RowStyles rowStyle, string sheetName = "")
+        public Models.DataTable WriteToTable(Stream stream, IEnumerable<FilterSet> filterSets, bool isEditable, RowStyles rowStyle, string sheetName = "")
         {
-            var dataTable = new DataTable();
+            var dataTable = new Models.DataTable();
             
             using (SpreadsheetDocument document =
                 SpreadsheetDocument.Open(stream, true))

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DataHandler.Excel.Models
+namespace Excel.DataTable.Models
 {
     public class DataRow
     {

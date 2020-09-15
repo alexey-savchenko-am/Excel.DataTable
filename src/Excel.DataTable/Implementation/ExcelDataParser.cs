@@ -7,10 +7,10 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using DataHandler.Excel.Models;
 using DocumentFormat.OpenXml.Packaging;
+using Excel.DataTable.Models;
 
-namespace DataHandler.Excel.Implementation
+namespace Excel.DataTable.Implementation
 {
     public class ExcelDataParser<TModel>
         : IDataParser<TModel>, IDisposable
@@ -31,8 +31,8 @@ namespace DataHandler.Excel.Implementation
             IDataObtainer dataObtainer, 
             IDataWriter dataWriter)
         {
-            _dataObtainer = dataObtainer ?? throw new InvalidOperationException($"dataObtainer is null");
-            _dataWriter = dataWriter ?? throw new InvalidOperationException($"dataWriter is null");
+            _dataObtainer = dataObtainer ?? throw new ArgumentNullException($"dataObtainer is null");
+            _dataWriter = dataWriter ?? throw new ArgumentNullException($"dataWriter is null");
         }
         
         
@@ -93,7 +93,7 @@ namespace DataHandler.Excel.Implementation
                 
             var filterValues = ExtractFilterValues(typeof(TModel));
             
-            var resultDataTables = new BlockingCollection<DataTable>();
+            var resultDataTables = new BlockingCollection<Models.DataTable>();
             var spin = new SpinWait();
             
             Stopwatch sw = new Stopwatch();
@@ -112,11 +112,6 @@ namespace DataHandler.Excel.Implementation
             });
             
             while (resultDataTables.Count < _fileStreamList.Count) spin.SpinOnce();
-                
-            //---------Clear Streams------------
-            this.ClearStreamList();
-            //----------------------------------
-            
             
             sw.Stop();
             var time = sw.ElapsedMilliseconds;
@@ -180,11 +175,6 @@ namespace DataHandler.Excel.Implementation
                     _dataWriter.UpdateCells(stream, cellTemplates);
                 }
             }
-            
-            //---------Clear Streams------------
-            if(!keepDocumentsOpen)
-                this.ClearStreamList();
-            //----------------------------------
             
             return this;
 

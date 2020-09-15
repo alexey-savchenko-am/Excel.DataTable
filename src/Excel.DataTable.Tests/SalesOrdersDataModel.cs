@@ -1,6 +1,4 @@
-using DataHandler.Excel;
-
-namespace DataHandler.Tests
+namespace Excel.DataTable.Tests
 {
     public class SalesOrdersDataModel
     {

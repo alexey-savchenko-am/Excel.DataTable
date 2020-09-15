@@ -1,9 +1,6 @@
-﻿using DataHandler.Excel.Implementation;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Excel.DataTable.Implementation;
 
-namespace DataHandler.Tests
+namespace Excel.DataTable.Tests
 {
     public class TestSalesOrdersDataParser
         : ExcelDataParser<SalesOrdersDataModel>

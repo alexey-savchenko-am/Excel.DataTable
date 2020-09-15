@@ -1,4 +1,4 @@
-﻿namespace DataHandler.Excel.Models
+﻿namespace Excel.DataTable.Models
 {
     public enum RowStyles
     {

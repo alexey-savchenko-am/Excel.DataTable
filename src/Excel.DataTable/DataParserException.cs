@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataHandler.Excel
+namespace Excel.DataTable
 {
     public class DataParserException
         : Exception

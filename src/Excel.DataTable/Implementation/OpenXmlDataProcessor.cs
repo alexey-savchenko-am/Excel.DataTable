@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using DataHandler.Excel.Models;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Excel.DataTable.Models;
 
-namespace DataHandler.Excel.Implementation
+namespace Excel.DataTable.Implementation
 {
     public abstract class OpenXmlDataProcessor
     {

@@ -5,9 +5,9 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7C47EEE5-3178-4985-948C-EC43250F10DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataHandler.Excel", "src\DataHandler.Excel\DataHandler.Excel.csproj", "{95A3F86F-197B-4343-80CE-218C927565ED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Excel.DataTable", "src\Excel.DataTable\Excel.DataTable.csproj", "{95A3F86F-197B-4343-80CE-218C927565ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataHandler.Tests", "src\DataHandler.Tests\DataHandler.Tests.csproj", "{8BC3ECD1-DA63-4871-87C5-7CE09934440A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Excel.DataTable.Tests", "src\Excel.DataTable.Tests\Excel.DataTable.Tests.csproj", "{8BC3ECD1-DA63-4871-87C5-7CE09934440A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

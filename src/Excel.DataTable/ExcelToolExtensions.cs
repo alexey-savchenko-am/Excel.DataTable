@@ -1,7 +1,7 @@
-﻿using DataHandler.Excel.Implementation;
+﻿using Excel.DataTable.Implementation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DataHandler.Excel
+namespace Excel.DataTable
 {
     public static class ExcelToolExtensions
     {

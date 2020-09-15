@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
-using DataHandler.Excel.Models;
+using Excel.DataTable.Models;
 using Xunit;
 
-namespace DataHandler.Tests.UnitTests
+namespace Excel.DataTable.Tests.UnitTests
 {
     public class ExcelDataHandlerTests
     {

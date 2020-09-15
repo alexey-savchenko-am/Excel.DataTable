@@ -2,11 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <RootNamespace>Excel.DataTable.Tests</RootNamespace>
     </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\DataHandler.Excel\DataHandler.Excel.csproj" />
-    </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="AutoFixture" Version="4.13.0" />
@@ -23,6 +20,10 @@
       <Content Include="SampleData.xlsx">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Excel.DataTable\Excel.DataTable.csproj" />
     </ItemGroup>
 
 </Project>

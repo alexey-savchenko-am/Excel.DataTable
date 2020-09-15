@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DataHandler.Excel.Models
+namespace Excel.DataTable.Models
 {
     public class DataTable
     {

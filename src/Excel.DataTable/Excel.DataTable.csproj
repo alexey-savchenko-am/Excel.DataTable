@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <OutputType>Library</OutputType>
+    <RootNamespace>Excel.DataTable</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

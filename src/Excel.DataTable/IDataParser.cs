@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using DataHandler.Excel.Models;
+using Excel.DataTable.Models;
 
-namespace DataHandler.Excel
+namespace Excel.DataTable
 {
     public interface IDataParser<TModel>
         where  TModel : class, new()

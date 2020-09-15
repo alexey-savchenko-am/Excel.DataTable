@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace DataHandler.Excel.Models
+namespace Excel.DataTable.Models
 {
     public class DataCell
     {
