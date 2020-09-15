@@ -84,8 +84,47 @@ Full code of extractig data from excel file should look like this one:
        .Result;
 ```
 
+## DataParser
 
+Use DataParser class to use default OpenXmlDataObtainer and OpenXmlDataWriter.
+ExcelDataParser implements IDisposable interface to clear streams after reading or writing data.
+So you need to use parser within using block:
 
+```
+var result = new List<SalesOrdersDataModel>();
+using (var dataParser = new DataParser<SalesOrdersDataModel>())
+{
+    result = 
+         dataParser
+           .Bind("./SampleData.xlsx")
+           .ExtractData("SalesOrders")
+           .Result;
+}
+```
 
+## Write data
 
+You are able to write data to excel table:
+
+```
+ var fixture = new Fixture();
+ 
+var testRecords = 
+    fixture
+    .CreateMany<SalesOrdersDataModel>()
+    .ToList();
+    
+using (var dataParser = new DataParser<SalesOrdersDataModel>())
+{
+    result = 
+         dataParser
+           .Bind("./SampleData.xlsx")
+           .WriteData(testRecords, RowStyles.Simple, false, "SalesOrders");
+}
+
+```
+The first parameter of WriteData method is a list of records of type SalesOrdersDataModel.
+The second one is a member of RowStyle enum.
+If you set the third parameter to true, the stream will not be cleared after data writing.
+The last parameter is SheetName where the table exists.
 
