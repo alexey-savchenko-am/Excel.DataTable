@@ -1,4 +1,4 @@
-# DataHandler.Excel
+# Excel.DataTable
 Allows to extract or write data easily from/to Excel tables
 
 # Usage
