@@ -1,4 +1,4 @@
-# DataHandler
+# DataHandler.Excel
 Allows to extract or write data easily from/to Excel tables
 
 # Usage
@@ -65,7 +65,7 @@ First parameter is boolean value to clear streams after reading file.
 The secon one is a Excel sheet name, where the table specified:
 
 ```
-  dataParser.ExtractData(true, "SalesOrders")
+  dataParser.ExtractData("SalesOrders")
 ```
 
 ## Result 
@@ -80,7 +80,7 @@ Full code of extractig data from excel file should look like this one:
           new OpenXmlDataObtainer(), 
           new OpenXmlDataWriter())
        .Bind("./SampleData.xlsx")
-       .ExtractData(true, "SalesOrders")
+       .ExtractData("SalesOrders")
        .Result;
 ```
 
