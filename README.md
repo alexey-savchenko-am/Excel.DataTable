@@ -1,3 +1,5 @@
+[![NuGet version (Excel.DataTable)](https://img.shields.io/nuget/v/IO.Pipeline.svg?style=flat-square&color=blue)](https://www.nuget.org/packages/Excel.DataTable)
+
 # Excel.DataTable
 Allows to extract or write data easily from/to Excel tables
 
