@@ -63,8 +63,7 @@ Bind data parser with physical excel file on disk or stream with the following c
 ## Extract data
 
 To extract data from file use the command ExtractData.
-First parameter is boolean value to clear streams after reading file.
-The secon one is a Excel sheet name, where the table specified:
+Specify a sheet name, where the table is located:
 
 ```
   dataParser.ExtractData("SalesOrders")
