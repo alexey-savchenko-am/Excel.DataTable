@@ -15,7 +15,7 @@ Assume we have an excel file which contains table like this one:
 First of all, we should create a model, each property of which contains information about physical columns of the excel table.
 DataColumn attribute should have a name of physical column of the table, but the property itself can have an arbitrary name:
 
-```
+```csharp
  public class SalesOrdersDataModel
  {
         [DataColumn("OrderDate")]
@@ -46,7 +46,7 @@ DataColumn attribute should have a name of physical column of the table, but the
 Use ExcelDataParser to read or write data.
 You should specify generic type as SalesOrdersDataModel.
 
-```
+```csharp
   var dataParser =
      new ExcelDataParser<SalesOrdersDataModel>(
           new OpenXmlDataObtainer(), 
@@ -57,7 +57,7 @@ You should specify generic type as SalesOrdersDataModel.
 
 Bind data parser with physical excel file on disk or stream with the following command:
 
-```
+```csharp
   dataParser.Bind("./SampleData.xlsx");
 ```
 
@@ -66,7 +66,7 @@ Bind data parser with physical excel file on disk or stream with the following c
 To extract data from file use the command ExtractData.
 Specify a sheet name, where the table is located:
 
-```
+```csharp
   dataParser.ExtractData("SalesOrders")
 ```
 
@@ -76,7 +76,7 @@ Use property Result to get data as a list of objects with type SalesOrdersDataMo
 
 Full code of extractig data from excel file should look like this one:
 
-```
+```csharp
   var data =
     new ExcelDataParser<SalesOrdersDataModel>(
           new OpenXmlDataObtainer(), 
@@ -92,7 +92,7 @@ Use DataParser class to use default OpenXmlDataObtainer and OpenXmlDataWriter.
 ExcelDataParser implements IDisposable interface to clear streams after reading or writing data.
 So you need to use parser within using block:
 
-```
+```csharp
 var result = new List<SalesOrdersDataModel>();
 using (var dataParser = new DataParser<SalesOrdersDataModel>())
 {
@@ -108,7 +108,7 @@ using (var dataParser = new DataParser<SalesOrdersDataModel>())
 
 You are able to write data to excel table:
 
-```
+```csharp
  var fixture = new Fixture();
  
 var testRecords = 
