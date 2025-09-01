@@ -1,20 +1,48 @@
 # Excel.DataTable
-Allows to extract data from excel table or write some data to table.
+A lightweight library to **extract data from Excel tables** into strongly-typed models or **write data back** into existing tables.
 
 [![NuGet version (Excel.DataTable)](https://img.shields.io/nuget/v/Excel.DataTable.svg?style=flat-square&color=blue)](https://www.nuget.org/packages/Excel.DataTable)
 [![Downloads](https://img.shields.io/nuget/dt/Excel.DataTable?style=flat-square&color=blue)]()
 
+# Features
+- Map Excel columns to C# model properties via attributes.  
+- Extract data from Excel sheets as strongly-typed lists.  
+- Write data into Excel tables with row formatting options.  
+- Built on **OpenXML** (no Excel installation required).  
+- Supports both file paths and streams.  
+
+# Installation
+
+```bash
+dotnet add package Excel.DataTable
+```
+# Quick Start
+
+```csharp
+using (var parser = new DataParser<SalesOrdersDataModel>())
+{
+    // Read
+    var data = parser
+        .Bind("./SampleData.xlsx")
+        .ExtractData("SalesOrders")
+        .Result;
+
+    // Write
+    parser.WriteData(data, RowStyles.Simple, false, "SalesOrders");
+}
+```
+
 
 # Usage
 
-The tool allows to parse excel file and retrieve or write some data to excel table.
+The tool allows you to parse an Excel file and either retrieve or write data to a table.
 
-Assume we have an excel file which contains table like this one:
+Assume we have an Excel file which contains a table like this:
 
 ![table sample](https://github.com/goOrn/DataHandler/blob/master/screenshots/table.JPG?raw=true)
 
-First of all, we should create a model, each property of which contains information about physical columns of the excel table.
-DataColumn attribute should have a name of physical column of the table, but the property itself can have an arbitrary name:
+First of all, you need to create a model where each property corresponds to a column of the Excel table.
+The DataColumn attribute should contain the name of the actual Excel column, while the property name itself can be arbitrary:
 
 ```csharp
  public class SalesOrdersDataModel
@@ -45,7 +73,7 @@ DataColumn attribute should have a name of physical column of the table, but the
 ## ExcelDataParser
 
 Use ExcelDataParser to read or write data.
-You should specify generic type as SalesOrdersDataModel.
+You should specify the generic type, e.g. SalesOrdersDataModel:
 
 ```csharp
   var dataParser =
@@ -56,7 +84,7 @@ You should specify generic type as SalesOrdersDataModel.
 
 ## Bind
 
-Bind data parser with physical excel file on disk or stream with the following command:
+Bind the parser with a physical Excel file on disk or with a stream:
 
 ```csharp
   dataParser.Bind("./SampleData.xlsx");
@@ -64,8 +92,8 @@ Bind data parser with physical excel file on disk or stream with the following c
 
 ## Extract data
 
-To extract data from file use the command ExtractData.
-Specify a sheet name, where the table is located:
+To extract data from the file, use the ExtractData method.
+Specify the sheet name where the table is located:
 
 ```csharp
   dataParser.ExtractData("SalesOrders")
@@ -73,9 +101,9 @@ Specify a sheet name, where the table is located:
 
 ## Result 
 
-Use property Result to get data as a list of objects with type SalesOrdersDataModel.
+Use the Result property to get data as a list of objects of type SalesOrdersDataModel.
 
-Full code of extractig data from excel file should look like this one:
+Full code of extracting data looks like this:
 
 ```csharp
   var data =
@@ -89,9 +117,9 @@ Full code of extractig data from excel file should look like this one:
 
 ## DataParser
 
-Use DataParser class to use default OpenXmlDataObtainer and OpenXmlDataWriter.
-ExcelDataParser implements IDisposable interface to clear streams after reading or writing data.
-So you need to use parser within using block:
+Use the DataParser class to simplify initialization with default OpenXmlDataObtainer and OpenXmlDataWriter.
+
+ExcelDataParser implements IDisposable, so you should use it within a using block:
 
 ```csharp
 var result = new List<SalesOrdersDataModel>();
@@ -107,7 +135,7 @@ using (var dataParser = new DataParser<SalesOrdersDataModel>())
 
 ## Write data
 
-You are able to write data to excel table:
+You can also write data into an Excel table:
 
 ```csharp
  var fixture = new Fixture();
@@ -126,8 +154,4 @@ using (var dataParser = new DataParser<SalesOrdersDataModel>())
 }
 
 ```
-The first parameter of WriteData method is a list of records of type SalesOrdersDataModel.
-The second one is a member of RowStyle enum.
-If you set the third parameter to true, the stream will not be cleared after data writing.
-The last parameter is SheetName where the table exists.
 
